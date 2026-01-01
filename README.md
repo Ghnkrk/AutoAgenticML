@@ -91,6 +91,10 @@ The system uses **hierarchical orchestration** with three layers:
 > Each phase is driven by **explicit state transitions** rather than free-form reasoning.
 
 ---
+##Graph Structure
+
+<img width="1904" height="186" alt="graph_visual" src="https://github.com/user-attachments/assets/bf1f6e07-9993-495b-b22c-f70f9cd14690" />
+
 
 ## ⚙️ Core Components
 
