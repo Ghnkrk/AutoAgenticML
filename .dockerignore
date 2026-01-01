@@ -1,0 +1,23 @@
+.env 
+.venv/
+venv/
+
+__pycache__/
+*.pyc 
+*.pyo
+*.pyd 
+
+*.csv
+*.png
+
+train (2).csv/
+test (2).csv/
+
+outputs/
+predictions/
+trained_models/
+uploads/
+
+README.md
+
+

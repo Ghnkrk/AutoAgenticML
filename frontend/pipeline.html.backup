@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Execution - AgenticML</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            color: #d1d5db;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #374151;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, #2563eb, #7c3aed);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: #374151;
+            border-radius: 0.25rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            transition: width 0.3s;
+        }
+
+        .log-entry {
+            padding: 0.5rem;
+            border-bottom: 1px solid #374151;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+    </style>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold mb-2">Pipeline Execution</h1>
+            <p class="text-gray-400" id="pipelineId"></p>
+        </header>
+
+        <!-- Status Card -->
+        <div class="bg-gray-800/50 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-gray-700 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-xl font-semibold" id="statusText">Initializing...</h2>
+                    <p class="text-gray-400 text-sm" id="currentNode"></p>
+                </div>
+                <div id="statusIcon" class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-700 rounded-full h-3 mb-2">
+                <div id="progressBar"
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                    style="width: 0%"></div>
+            </div>
+            <p class="text-sm text-gray-400 text-right" id="progressText">0%</p>
+        </div>
+
+        <!-- Logs Section -->
+        <div class="bg-gray-800/50 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-gray-700 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">Pipeline Logs</h3>
+                <button id="toggleLogs" class="text-sm text-blue-400 hover:text-blue-300">
+                    Hide Details
+                </button>
+            </div>
+            <div id="logsContainer" class="bg-gray-900/50 rounded-lg p-4 max-h-96 overflow-y-auto font-mono text-sm">
+                <div id="logs"></div>
+            </div>
+        </div>
+
+        <!-- Downloads Section (hidden initially) -->
+        <div id="downloadsSection"
+            class="hidden bg-gray-800/50 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-gray-700 mb-6">
+            <h3 class="text-lg font-semibold mb-4">Download Results</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="modelsDownload"></div>
+                <div id="predictionsDownload"></div>
+            </div>
+        </div>
+
+        <!-- Summary Section (hidden initially) -->
+        <div id="summarySection"
+            class="hidden bg-gray-800/50 backdrop-blur-lg rounded-2xl shadow-2xl p-6 border border-gray-700">
+            <h3 class="text-lg font-semibold mb-4">Pipeline Summary</h3>
+            <div id="summaryContent" class="prose prose-invert max-w-none"></div>
+        </div>
+    </div>
+
+    <!-- Human Interaction Modal -->
+    <div id="humanModal"
+        class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div
+            class="bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-700">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-4" id="modalTitle">Human Review Required</h2>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/websocket.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/pipeline.js"></script>
+</body>
+
+</html>
