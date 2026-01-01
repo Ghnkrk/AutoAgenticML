@@ -97,7 +97,7 @@ The system uses **hierarchical orchestration** with three layers:
 ```mermaid
 graph LR
     A[📤 Upload Dataset] --> B[🔍 Data Analysis]
-    B --> C[🧹 Preprocessing Config]
+    B --> C[🧹 Preprocessing Config] --> K[🔮 Inference]
     C --> D[👤 Human Review]
     D --> E[⚙️ Feature Engineering]
     E --> F[🎨 Model Design]
