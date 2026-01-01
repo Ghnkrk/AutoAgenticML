@@ -251,22 +251,17 @@ AutoAgenticML/
 │       ├── modals.js          # Human review modals
 │       └── websocket.js       # Real-time updates
 │
-├── 🤖 Orchestration
-│   ├── main.py                # LangGraph state definition
-│   ├── Orchestrators.py       # L0/L1/L2 orchestrators
-│   └── promptTemplate.py      # LLM prompts
-│
-├── 📊 Pipeline Nodes
-│   ├── Nodes.py               # All pipeline node implementations
-│   ├── HumanNodes.py          # Human interaction nodes
-│   └── ModelResponseSchema.py # Pydantic schemas
-│
-└── 🔬 Processing Modules
-    ├── descriptive.py         # Statistical profiling
-    ├── analysis.py            # Feature analysis
-    ├── preprocess.py          # Data preprocessing
-    ├── trainer.py             # Model training
-    └── evaluator.py           # Model evaluation
+├── main.py                # LangGraph state definition
+├── Orchestrators.py       # L0/L1/L2 orchestrators
+├── promptTemplate.py      # LLM prompts
+├── Nodes.py               # All pipeline node implementations
+├── HumanNodes.py          # Human interaction nodes
+├── ModelResponseSchema.py # Pydantic schemas
+├── descriptive.py         # Statistical profiling
+├── analysis.py            # Feature analysis
+├── preprocess.py          # Data preprocessing
+├── trainer.py             # Model training
+└── evaluator.py           # Model evaluation
 ```
 
 ---
